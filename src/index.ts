@@ -2,10 +2,11 @@ import getInputs from './getInputs';
 import { context } from '@actions/github';
 import { tmpdir } from 'os';
 import { info, setFailed } from '@actions/core';
-import { cp, mkdirP } from '@actions/io';
+import { mkdirP } from '@actions/io';
 import { resolve } from 'path';
 import setGitUser from './setGitUser';
 import git from './git';
+import copyFolder from './copyFolder';
 
 async function run() {
   try {
@@ -47,10 +48,7 @@ async function run() {
       await git('checkout', '--orphan', publishBranch);
       git('remote', 'add', 'origin', remoteUrl);
     }
-    await cp(resolve(fullPublishDir, '*'), workDir, {
-      recursive: true,
-      force: true
-    });
+    await copyFolder(fullPublishDir, workDir);
     await setGitUser(userName, userEmail);
     git('add', '--all');
     git('commit', '-m', commitMessage);
