@@ -34,7 +34,7 @@ module.exports =
 /******/ 	// the startup function
 /******/ 	function startup() {
 /******/ 		// Load entry module and return exports
-/******/ 		return __webpack_require__(636);
+/******/ 		return __webpack_require__(809);
 /******/ 	};
 /******/ 	// initialize runtime
 /******/ 	runtime(__webpack_require__);
@@ -8538,109 +8538,6 @@ module.exports = require("net");
 
 /***/ }),
 
-/***/ 636:
-/***/ (function(__unusedmodule, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-
-// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var core = __webpack_require__(470);
-
-// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
-var github = __webpack_require__(469);
-
-// CONCATENATED MODULE: ./src/getInputs.ts
-
-
-function getInputs() {
-    const inputs = {
-        personalToken: Object(core.getInput)('personal_token', { required: true }),
-        publishBranch: Object(core.getInput)('publish_branch'),
-        publishDir: Object(core.getInput)('publish_dir'),
-        userName: Object(core.getInput)('user_name') || github.context.actor,
-        userEmail: Object(core.getInput)('user_email') || `${github.context.actor}@users.noreply.github.com`,
-        commitMessage: `${Object(core.getInput)('commit_message') || 'deploy@'} ${github.context.sha}`
-    };
-    Object.entries(inputs).forEach(([key, value]) => Object(core.info)(`${key}: ${value}`));
-    return inputs;
-}
-
-// EXTERNAL MODULE: external "os"
-var external_os_ = __webpack_require__(87);
-
-// EXTERNAL MODULE: ./node_modules/@actions/io/lib/io.js
-var io = __webpack_require__(1);
-
-// EXTERNAL MODULE: external "path"
-var external_path_ = __webpack_require__(622);
-
-// EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
-var exec = __webpack_require__(986);
-
-// CONCATENATED MODULE: ./src/git.ts
-
-function git(...args) {
-    return Object(exec.exec)('git', args);
-}
-
-// CONCATENATED MODULE: ./src/setGitUser.ts
-
-async function setGitUser(userName, userEmail) {
-    return Promise.all([
-        git('config', 'user.name', userName),
-        git('config', 'user.email', userEmail)
-    ]);
-}
-
-// CONCATENATED MODULE: ./src/index.ts
-
-
-
-
-
-
-
-
-async function run() {
-    try {
-        const { publishBranch, personalToken, publishDir, userName, userEmail, commitMessage } = getInputs();
-        const remoteUrl = `https://x-access-token:${personalToken}@github.com/${github.context.repo.owner}/${github.context.repo.repo}.git`;
-        Object(core.info)(`remote url: ${remoteUrl}`);
-        const fullPublishDir = Object(external_path_.resolve)(process.cwd(), publishDir);
-        const workDir = Object(external_path_.resolve)(Object(external_os_.tmpdir)(), github.context.repo.owner, github.context.repo.repo, github.context.sha);
-        await Object(io.mkdirP)(workDir);
-        Object(core.info)(`working in ${workDir}`);
-        try {
-            await git('clone', '--depth=1', '--single-branch', '--branch', publishBranch, remoteUrl, workDir);
-            process.chdir(workDir);
-            await git('rm', '-r', '--ignore-unmatch', '*');
-        }
-        catch {
-            Object(core.info)(`first deploy, creating new branch ${publishBranch}`);
-            process.chdir(workDir);
-            await git('init');
-            await git('checkout', '--orphan', publishBranch);
-            git('remote', 'add', 'origin', remoteUrl);
-        }
-        await Object(io.cp)(Object(external_path_.resolve)(fullPublishDir, '*'), workDir, {
-            recursive: true,
-            force: true
-        });
-        await setGitUser(userName, userEmail);
-        git('add', '--all');
-        git('commit', '-m', commitMessage);
-        git('push', 'origin', publishBranch);
-    }
-    catch (e) {
-        Object(core.setFailed)(`Action failed with ${e}`);
-    }
-}
-run();
-
-
-/***/ }),
-
 /***/ 649:
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -10015,6 +9912,126 @@ function getUserAgent() {
 
 exports.getUserAgent = getUserAgent;
 //# sourceMappingURL=index.js.map
+
+
+/***/ }),
+
+/***/ 809:
+/***/ (function(__unusedmodule, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __webpack_require__(470);
+
+// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+var github = __webpack_require__(469);
+
+// CONCATENATED MODULE: ./src/getInputs.ts
+
+
+function getInputs() {
+    const inputs = {
+        personalToken: Object(core.getInput)('personal_token', { required: true }),
+        publishBranch: Object(core.getInput)('publish_branch'),
+        publishDir: Object(core.getInput)('publish_dir'),
+        userName: Object(core.getInput)('user_name') || github.context.actor,
+        userEmail: Object(core.getInput)('user_email') || `${github.context.actor}@users.noreply.github.com`,
+        commitMessage: `${Object(core.getInput)('commit_message') || 'deploy@'} ${github.context.sha}`
+    };
+    Object.entries(inputs).forEach(([key, value]) => Object(core.info)(`${key}: ${value}`));
+    return inputs;
+}
+
+// EXTERNAL MODULE: external "os"
+var external_os_ = __webpack_require__(87);
+
+// EXTERNAL MODULE: ./node_modules/@actions/io/lib/io.js
+var io = __webpack_require__(1);
+
+// EXTERNAL MODULE: external "path"
+var external_path_ = __webpack_require__(622);
+
+// EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
+var exec = __webpack_require__(986);
+
+// CONCATENATED MODULE: ./src/git.ts
+
+function git(...args) {
+    return Object(exec.exec)('git', args);
+}
+
+// CONCATENATED MODULE: ./src/setGitUser.ts
+
+async function setGitUser(userName, userEmail) {
+    return Promise.all([
+        git('config', 'user.name', userName),
+        git('config', 'user.email', userEmail)
+    ]);
+}
+
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __webpack_require__(747);
+
+// CONCATENATED MODULE: ./src/copyFolder.ts
+
+
+
+async function copyFolder(source, dest) {
+    const copyOpts = { recursive: true, force: true };
+    const files = Object(external_fs_.readdirSync)(source);
+    for await (const file of files) {
+        if (file.endsWith('.git') || file.endsWith('.github')) {
+            continue;
+        }
+        const filePath = Object(external_path_.resolve)(source, file);
+        await Object(io.cp)(filePath, dest, copyOpts);
+    }
+}
+
+// CONCATENATED MODULE: ./src/index.ts
+
+
+
+
+
+
+
+
+
+async function run() {
+    try {
+        const { publishBranch, personalToken, publishDir, userName, userEmail, commitMessage } = getInputs();
+        const remoteUrl = `https://x-access-token:${personalToken}@github.com/${github.context.repo.owner}/${github.context.repo.repo}.git`;
+        Object(core.info)(`remote url: ${remoteUrl}`);
+        const fullPublishDir = Object(external_path_.resolve)(process.cwd(), publishDir);
+        const workDir = Object(external_path_.resolve)(Object(external_os_.tmpdir)(), github.context.repo.owner, github.context.repo.repo, github.context.sha);
+        await Object(io.mkdirP)(workDir);
+        Object(core.info)(`working in ${workDir}`);
+        try {
+            await git('clone', '--depth=1', '--single-branch', '--branch', publishBranch, remoteUrl, workDir);
+            process.chdir(workDir);
+            await git('rm', '-r', '--ignore-unmatch', '*');
+        }
+        catch {
+            Object(core.info)(`first deploy, creating new branch ${publishBranch}`);
+            process.chdir(workDir);
+            await git('init');
+            await git('checkout', '--orphan', publishBranch);
+            git('remote', 'add', 'origin', remoteUrl);
+        }
+        await copyFolder(fullPublishDir, workDir);
+        await setGitUser(userName, userEmail);
+        git('add', '--all');
+        git('commit', '-m', commitMessage);
+        git('push', 'origin', publishBranch);
+    }
+    catch (e) {
+        Object(core.setFailed)(`Action failed with ${e}`);
+    }
+}
+run();
 
 
 /***/ }),
