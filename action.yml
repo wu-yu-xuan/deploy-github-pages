@@ -1,8 +1,8 @@
 name: 'Depoy GitHub Pages'
 description: 'Depoy GitHub Pages'
-author: 'peaceiris'
+author: 'wu-yu-xuan'
 runs:
-  using: 'wu-yu-xuan'
+  using: 'node12'
   main: 'lib/index.js'
 branding:
   icon: 'upload-cloud'
