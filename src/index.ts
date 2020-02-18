@@ -1,7 +1,7 @@
 import getInputs from './getInputs';
 import { context } from '@actions/github';
 import { tmpdir } from 'os';
-import { info, setFailed } from '@actions/core';
+import { info, setFailed, warning } from '@actions/core';
 import { mkdirP } from '@actions/io';
 import { resolve } from 'path';
 import setGitUser from './setGitUser';
@@ -51,8 +51,14 @@ async function run() {
     await copyFolder(fullPublishDir, workDir);
     await setGitUser(userName, userEmail);
     await git('add', '--all');
-    await git('commit', '-m', commitMessage);
+    try {
+      // nothing to commit will not return 0
+      await git('commit', '-m', commitMessage);
+    } catch {
+      warning('skip commit because nothing to commit or run git hook fail');
+    }
     await git('push', 'origin', publishBranch);
+    info('deploy complete!');
   } catch (e) {
     setFailed(`Action failed with ${e}`);
   }
