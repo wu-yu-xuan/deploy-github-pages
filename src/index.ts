@@ -40,14 +40,17 @@ async function run() {
       );
       process.chdir(workDir);
       await git('rm', '-r', '--ignore-unmatch', '*');
-      await cp(fullPublishDir, workDir, { recursive: true, force: true });
     } catch {
       info(`first deploy, creating new branch ${publishBranch}`);
+      process.chdir(workDir);
       await git('init');
       await git('checkout', '--orphan', publishBranch);
-      await cp(fullPublishDir, workDir, { recursive: true, force: true });
       git('remote', 'add', 'origin', remoteUrl);
     }
+    await cp(resolve(fullPublishDir, '*'), workDir, {
+      recursive: true,
+      force: true
+    });
     await setGitUser(userName, userEmail);
     git('add', '--all');
     git('commit', '-m', commitMessage);
