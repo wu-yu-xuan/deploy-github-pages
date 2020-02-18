@@ -2,7 +2,7 @@ import getInputs from './getInputs';
 import { context } from '@actions/github';
 import { tmpdir } from 'os';
 import { info, setFailed } from '@actions/core';
-import { cp } from '@actions/io';
+import { cp, mkdirP } from '@actions/io';
 import { resolve } from 'path';
 import setGitUser from './setGitUser';
 import git from './git';
@@ -20,7 +20,14 @@ async function run() {
     const remoteUrl = `https://x-access-token:${personalToken}@github.com/${context.repo.owner}/${context.repo.repo}.git`;
     info(`remote url: ${remoteUrl}`);
     const fullPublishDir = resolve(process.cwd(), publishDir);
-    const workDir = tmpdir();
+    const workDir = resolve(
+      tmpdir(),
+      context.repo.owner,
+      context.repo.repo,
+      context.sha
+    );
+    await mkdirP(workDir);
+    info(`working in ${workDir}`);
     try {
       await git(
         'clone',
