@@ -1,0 +1,30 @@
+name: 'Depoy GitHub Pages'
+description: 'Depoy GitHub Pages'
+author: 'peaceiris'
+runs:
+  using: 'wu-yu-xuan'
+  main: 'lib/index.js'
+branding:
+  icon: 'upload-cloud'
+  color: 'blue'
+inputs:
+  personal_token:
+    description: ''
+    required: true
+  publish_branch:
+    description: ''
+    required: false
+    default: 'gh-pages'
+  publish_dir:
+    description: ''
+    required: false
+    default: 'build'
+  user_name:
+    description: 'Set Git user.name'
+    required: false
+  user_email:
+    description: 'Set Git user.email'
+    required: false
+  commit_message:
+    description: 'Set custom commit message'
+    required: false
