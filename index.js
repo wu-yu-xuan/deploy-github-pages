@@ -9978,6 +9978,7 @@ var external_fs_ = __webpack_require__(747);
 
 
 
+
 async function copyFolder(source, dest) {
     const copyOpts = { recursive: true, force: true };
     const files = Object(external_fs_.readdirSync)(source);
@@ -9988,6 +9989,7 @@ async function copyFolder(source, dest) {
         const filePath = Object(external_path_.resolve)(source, file);
         await Object(io.cp)(filePath, dest, copyOpts);
     }
+    Object(core.info)(`successfully copied from ${source} into ${dest}`);
 }
 
 // CONCATENATED MODULE: ./src/index.ts
@@ -10024,8 +10026,14 @@ async function run() {
         await copyFolder(fullPublishDir, workDir);
         await setGitUser(userName, userEmail);
         await git('add', '--all');
-        await git('commit', '-m', commitMessage);
+        try {
+            await git('commit', '-m', commitMessage);
+        }
+        catch {
+            Object(core.warning)('skip commit because nothing to commit or run git hook fail');
+        }
         await git('push', 'origin', publishBranch);
+        Object(core.info)('deploy complete!');
     }
     catch (e) {
         Object(core.setFailed)(`Action failed with ${e}`);
