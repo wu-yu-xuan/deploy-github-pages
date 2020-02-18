@@ -46,13 +46,13 @@ async function run() {
       process.chdir(workDir);
       await git('init');
       await git('checkout', '--orphan', publishBranch);
-      git('remote', 'add', 'origin', remoteUrl);
+      await git('remote', 'add', 'origin', remoteUrl);
     }
     await copyFolder(fullPublishDir, workDir);
     await setGitUser(userName, userEmail);
-    git('add', '--all');
-    git('commit', '-m', commitMessage);
-    git('push', 'origin', publishBranch);
+    await git('add', '--all');
+    await git('commit', '-m', commitMessage);
+    await git('push', 'origin', publishBranch);
   } catch (e) {
     setFailed(`Action failed with ${e}`);
   }
