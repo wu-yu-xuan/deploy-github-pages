@@ -6,7 +6,7 @@ import { info } from '@actions/core';
 export default async function copyFolder(source: string, dest: string) {
   const copyOpts = { recursive: true, force: true };
   const files = readdirSync(source);
-  for await (const file of files) {
+  for (const file of files) {
     if (file.endsWith('.git') || file.endsWith('.github')) {
       continue;
     }

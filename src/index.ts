@@ -16,7 +16,8 @@ async function run() {
       publishDir,
       userName,
       userEmail,
-      commitMessage
+      commitMessage,
+      keepFiles
     } = getInputs();
     const remoteUrl = `https://x-access-token:${personalToken}@github.com/${context.repo.owner}/${context.repo.repo}.git`;
     info(`remote url: ${remoteUrl}`);
@@ -40,7 +41,11 @@ async function run() {
         workDir
       );
       process.chdir(workDir);
-      await git('rm', '-r', '--ignore-unmatch', '*');
+      if (keepFiles) {
+        info('keeping existing files');
+      } else {
+        await git('rm', '-r', '--ignore-unmatch', '*');
+      }
     } catch {
       info(`first deploy, creating new branch ${publishBranch}`);
       process.chdir(workDir);
