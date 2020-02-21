@@ -9938,7 +9938,8 @@ function getInputs() {
         publishDir: Object(core.getInput)('publish_dir'),
         userName: Object(core.getInput)('user_name') || github.context.actor,
         userEmail: Object(core.getInput)('user_email') || `${github.context.actor}@users.noreply.github.com`,
-        commitMessage: `${Object(core.getInput)('commit_message') || 'deploy@'} ${github.context.sha}`
+        commitMessage: `${Object(core.getInput)('commit_message') || 'deploy@'} ${github.context.sha}`,
+        keepFiles: Object(core.getInput)('keep_files').toLowerCase() === 'true'
     };
     Object.entries(inputs).forEach(([key, value]) => Object(core.info)(`${key}: ${value}`));
     return inputs;
@@ -9982,7 +9983,7 @@ var external_fs_ = __webpack_require__(747);
 async function copyFolder(source, dest) {
     const copyOpts = { recursive: true, force: true };
     const files = Object(external_fs_.readdirSync)(source);
-    for await (const file of files) {
+    for (const file of files) {
         if (file.endsWith('.git') || file.endsWith('.github')) {
             continue;
         }
@@ -10004,7 +10005,7 @@ async function copyFolder(source, dest) {
 
 async function run() {
     try {
-        const { publishBranch, personalToken, publishDir, userName, userEmail, commitMessage } = getInputs();
+        const { publishBranch, personalToken, publishDir, userName, userEmail, commitMessage, keepFiles } = getInputs();
         const remoteUrl = `https://x-access-token:${personalToken}@github.com/${github.context.repo.owner}/${github.context.repo.repo}.git`;
         Object(core.info)(`remote url: ${remoteUrl}`);
         const fullPublishDir = Object(external_path_.resolve)(process.cwd(), publishDir);
@@ -10014,7 +10015,12 @@ async function run() {
         try {
             await git('clone', '--depth=1', '--single-branch', '--branch', publishBranch, remoteUrl, workDir);
             process.chdir(workDir);
-            await git('rm', '-r', '--ignore-unmatch', '*');
+            if (keepFiles) {
+                Object(core.info)('keeping existing files');
+            }
+            else {
+                await git('rm', '-r', '--ignore-unmatch', '*');
+            }
         }
         catch {
             Object(core.info)(`first deploy, creating new branch ${publishBranch}`);

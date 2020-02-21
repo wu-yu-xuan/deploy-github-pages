@@ -28,3 +28,7 @@ inputs:
   commit_message:
     description: 'Set custom commit message'
     required: false
+  keep_files:
+    description: 'If existing files in the publish branch should be not removed before deploying'
+    required: false
+    default: 'false'
