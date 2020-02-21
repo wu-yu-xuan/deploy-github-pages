@@ -18,10 +18,14 @@ inputs:
     description: ''
     required: false
     default: 'gh-pages'
-  publish_dir:
-    description: ''
+  source_dir:
+    description: 'the folder to deploy **from**'
     required: false
     default: 'build'
+  dest_dir:
+    description: 'the folder to deploy **to**'
+    required: false
+    default: './'
   user_name:
     description: 'Set Git user.name'
     required: false
