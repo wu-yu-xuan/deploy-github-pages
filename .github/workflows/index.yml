@@ -33,4 +33,4 @@ jobs:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
           commit_message: ${{ github.event.head_commit.message }}
           publish_branch: action
-          publish_dir: lib
+          source_dir: lib
