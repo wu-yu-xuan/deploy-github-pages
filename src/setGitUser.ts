@@ -1,8 +1,9 @@
 import git from './git';
+import inputs from './inputs';
 
-export default async function setGitUser(userName: string, userEmail: string) {
+export default async function setGitUser() {
   return Promise.all([
-    git('config', 'user.name', userName),
-    git('config', 'user.email', userEmail)
+    git('config', 'user.name', inputs.userName),
+    git('config', 'user.email', inputs.userEmail)
   ]);
 }
