@@ -10,7 +10,9 @@ export default function getInputs() {
     userEmail:
       getInput('user_email') || `${context.actor}@users.noreply.github.com`,
     commitMessage: `${getInput('commit_message') || 'deploy@'} ${context.sha}`,
-    keepFiles: getInput('keep_files').toLowerCase() === 'true'
+    keepFiles: getInput('keep_files').toLowerCase() === 'true',
+    publishRepo:
+      getInput('publish_repo') || `${context.repo.owner}/${context.repo.repo}`
   };
   Object.entries(inputs).forEach(([key, value]) => info(`${key}: ${value}`));
   return inputs;

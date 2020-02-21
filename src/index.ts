@@ -17,9 +17,10 @@ async function run() {
       userName,
       userEmail,
       commitMessage,
-      keepFiles
+      keepFiles,
+      publishRepo
     } = getInputs();
-    const remoteUrl = `https://x-access-token:${personalToken}@github.com/${context.repo.owner}/${context.repo.repo}.git`;
+    const remoteUrl = `https://x-access-token:${personalToken}@github.com/${publishRepo}.git`;
     info(`remote url: ${remoteUrl}`);
     const fullPublishDir = resolve(process.cwd(), publishDir);
     const workDir = resolve(

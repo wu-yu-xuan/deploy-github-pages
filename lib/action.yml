@@ -11,6 +11,9 @@ inputs:
   personal_token:
     description: ''
     required: true
+  publish_repo:
+    description: 'Set repo to publish, like userName/repoName'
+    required: false
   publish_branch:
     description: ''
     required: false
