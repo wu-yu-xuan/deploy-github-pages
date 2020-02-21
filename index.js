@@ -9939,7 +9939,8 @@ function getInputs() {
         userName: Object(core.getInput)('user_name') || github.context.actor,
         userEmail: Object(core.getInput)('user_email') || `${github.context.actor}@users.noreply.github.com`,
         commitMessage: `${Object(core.getInput)('commit_message') || 'deploy@'} ${github.context.sha}`,
-        keepFiles: Object(core.getInput)('keep_files').toLowerCase() === 'true'
+        keepFiles: Object(core.getInput)('keep_files').toLowerCase() === 'true',
+        publishRepo: Object(core.getInput)('publish_repo') || `${github.context.repo.owner}/${github.context.repo.repo}`
     };
     Object.entries(inputs).forEach(([key, value]) => Object(core.info)(`${key}: ${value}`));
     return inputs;
@@ -10005,8 +10006,8 @@ async function copyFolder(source, dest) {
 
 async function run() {
     try {
-        const { publishBranch, personalToken, publishDir, userName, userEmail, commitMessage, keepFiles } = getInputs();
-        const remoteUrl = `https://x-access-token:${personalToken}@github.com/${github.context.repo.owner}/${github.context.repo.repo}.git`;
+        const { publishBranch, personalToken, publishDir, userName, userEmail, commitMessage, keepFiles, publishRepo } = getInputs();
+        const remoteUrl = `https://x-access-token:${personalToken}@github.com/${publishRepo}.git`;
         Object(core.info)(`remote url: ${remoteUrl}`);
         const fullPublishDir = Object(external_path_.resolve)(process.cwd(), publishDir);
         const workDir = Object(external_path_.resolve)(Object(external_os_.tmpdir)(), github.context.repo.owner, github.context.repo.repo, github.context.sha);
