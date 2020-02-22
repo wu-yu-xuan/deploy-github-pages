@@ -25766,6 +25766,7 @@ async function prepareWorkDir() {
 
 
 
+
 async function prepareProject(workDir) {
     try {
         await git('clone', '--depth=1', '--single-branch', '--branch', src_inputs.publishBranch, src_inputs.remoteUrl, workDir);
@@ -25773,7 +25774,7 @@ async function prepareProject(workDir) {
             Object(core.info)('keeping existing files');
         }
         else {
-            await git('rm', '-r', '--ignore-unmatch', '*');
+            await git('rm', '-r', '--ignore-unmatch', Object(external_path_.resolve)(src_inputs.destDir, '*'));
         }
     }
     catch {
