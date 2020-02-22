@@ -1,6 +1,7 @@
 import git from './git';
 import inputs from './inputs';
 import { info } from '@actions/core';
+import { resolve } from 'path';
 
 export default async function prepareProject(workDir: string) {
   try {
@@ -16,7 +17,7 @@ export default async function prepareProject(workDir: string) {
     if (inputs.keepFiles) {
       info('keeping existing files');
     } else {
-      await git('rm', '-r', '--ignore-unmatch', '*');
+      await git('rm', '-r', '--ignore-unmatch', resolve(inputs.destDir, '*'));
     }
   } catch {
     info(`first deploy, creating new branch ${inputs.publishBranch}`);
