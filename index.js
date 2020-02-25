@@ -25729,8 +25729,8 @@ var external_fs_ = __webpack_require__(747);
 
 
 
+const copyOpts = { recursive: true, force: true };
 async function copyFolder(source, dest) {
-    const copyOpts = { recursive: true, force: true };
     if (!Object(external_fs_.existsSync)(dest)) {
         Object(io.mkdirP)(dest);
     }
@@ -25740,7 +25740,14 @@ async function copyFolder(source, dest) {
             continue;
         }
         const filePath = Object(external_path_.resolve)(source, file);
-        await Object(io.cp)(filePath, dest, copyOpts);
+        const targetPath = Object(external_path_.resolve)(dest, file);
+        const status = Object(external_fs_.statSync)(filePath);
+        if (status.isDirectory()) {
+            copyFolder(filePath, targetPath);
+        }
+        else {
+            await Object(io.cp)(filePath, targetPath, copyOpts);
+        }
     }
     Object(core.info)(`successfully copied from ${source} into ${dest}`);
 }
