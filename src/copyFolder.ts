@@ -1,10 +1,11 @@
 import { cp, mkdirP } from '@actions/io';
-import { readdirSync, existsSync } from 'fs';
+import { readdirSync, existsSync, statSync } from 'fs';
 import { resolve } from 'path';
 import { info } from '@actions/core';
 
+const copyOpts = { recursive: true, force: true };
+
 export default async function copyFolder(source: string, dest: string) {
-  const copyOpts = { recursive: true, force: true };
   if (!existsSync(dest)) {
     mkdirP(dest);
   }
@@ -14,7 +15,13 @@ export default async function copyFolder(source: string, dest: string) {
       continue;
     }
     const filePath = resolve(source, file);
-    await cp(filePath, dest, copyOpts);
+    const targetPath = resolve(dest, file);
+    const status = statSync(filePath);
+    if (status.isDirectory()) {
+      copyFolder(filePath, targetPath);
+    } else {
+      await cp(filePath, targetPath, copyOpts);
+    }
   }
   info(`successfully copied from ${source} into ${dest}`);
 }
