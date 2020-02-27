@@ -25732,7 +25732,7 @@ var external_fs_ = __webpack_require__(747);
 const copyOpts = { recursive: true, force: true };
 async function copyFolder(source, dest) {
     if (!Object(external_fs_.existsSync)(dest)) {
-        Object(io.mkdirP)(dest);
+        await Object(io.mkdirP)(dest);
     }
     const files = Object(external_fs_.readdirSync)(source);
     for (const file of files) {
@@ -25743,13 +25743,13 @@ async function copyFolder(source, dest) {
         const targetPath = Object(external_path_.resolve)(dest, file);
         const status = Object(external_fs_.statSync)(filePath);
         if (status.isDirectory()) {
-            copyFolder(filePath, targetPath);
+            await copyFolder(filePath, targetPath);
         }
         else {
             await Object(io.cp)(filePath, targetPath, copyOpts);
+            Object(core.info)(`successfully copied from ${filePath} into ${targetPath}`);
         }
     }
-    Object(core.info)(`successfully copied from ${source} into ${dest}`);
 }
 
 // EXTERNAL MODULE: external "os"
