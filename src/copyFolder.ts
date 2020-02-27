@@ -7,7 +7,7 @@ const copyOpts = { recursive: true, force: true };
 
 export default async function copyFolder(source: string, dest: string) {
   if (!existsSync(dest)) {
-    mkdirP(dest);
+    await mkdirP(dest);
   }
   const files = readdirSync(source);
   for (const file of files) {
@@ -18,10 +18,10 @@ export default async function copyFolder(source: string, dest: string) {
     const targetPath = resolve(dest, file);
     const status = statSync(filePath);
     if (status.isDirectory()) {
-      copyFolder(filePath, targetPath);
+      await copyFolder(filePath, targetPath);
     } else {
       await cp(filePath, targetPath, copyOpts);
+      info(`successfully copied from ${filePath} into ${targetPath}`);
     }
   }
-  info(`successfully copied from ${source} into ${dest}`);
 }
