@@ -9,12 +9,22 @@ const inputs = {
   userName: getInput('user_name') || context.actor,
   userEmail:
     getInput('user_email') || `${context.actor}@users.noreply.github.com`,
-  commitMessage: `${getInput('commit_message') || 'deploy@'} ${context.sha}`,
   keepFiles: getInput('keep_files').toLowerCase() === 'true',
   publishRepo:
     getInput('publish_repo') || `${context.repo.owner}/${context.repo.repo}`,
   get remoteUrl() {
     return `https://x-access-token:${this.personalToken}@github.com/${this.publishRepo}.git`;
+  },
+  get commitMessage() {
+    const message = getInput('commit_message') || 'deploy@';
+    /**
+     * @see https://help.github.com/en/github/writing-on-github/autolinked-references-and-urls#commit-shas
+     */
+    const repo =
+      inputs.publishRepo === `${context.repo.owner}/${context.repo.repo}`
+        ? ''
+        : `${context.repo.owner}/${context.repo.repo}`;
+    return `${message} ${repo}@${context.sha}`;
   }
 } as const;
 
