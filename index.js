@@ -25698,11 +25698,17 @@ const inputs = {
     destDir: Object(core.getInput)('dest_dir'),
     userName: Object(core.getInput)('user_name') || github.context.actor,
     userEmail: Object(core.getInput)('user_email') || `${github.context.actor}@users.noreply.github.com`,
-    commitMessage: `${Object(core.getInput)('commit_message') || 'deploy@'} ${github.context.sha}`,
     keepFiles: Object(core.getInput)('keep_files').toLowerCase() === 'true',
     publishRepo: Object(core.getInput)('publish_repo') || `${github.context.repo.owner}/${github.context.repo.repo}`,
     get remoteUrl() {
         return `https://x-access-token:${this.personalToken}@github.com/${this.publishRepo}.git`;
+    },
+    get commitMessage() {
+        const message = Object(core.getInput)('commit_message') || 'deploy@';
+        const repo = inputs.publishRepo === `${github.context.repo.owner}/${github.context.repo.repo}`
+            ? ''
+            : `${github.context.repo.owner}/${github.context.repo.repo}`;
+        return `${message} ${repo}@${github.context.sha}`;
     }
 };
 Object.entries(inputs).forEach(([key, value]) => Object(core.info)(`${key}: ${value}`));
